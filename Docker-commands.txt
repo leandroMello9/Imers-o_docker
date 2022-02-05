@@ -1,0 +1,92 @@
+Docker container run <nome da imagem> = Criando um novo container
+docker container ls = Lista meus containers ativos.
+docker container ls -a = Lista meus containers criados.
+docker container run --name <nome do container> <imagem do container> = cria um container com um nome especifico.
+docker container rm <nome do container ou ID do container> = Remove o container
+
+------ Modo interativo ----------
+
+docker container run -it <nome da imagem> ubuntu /bin/bash /diretorio = Criação de um container interativo ubuntu e informando o diretorio que queremos interagir 
+   IT = Informa que vamos entrar no modo interativo e ativar o TTY
+
+
+------ Executando continuamente ---------------
+
+docker container run -d <imagem> = Executa um container em segundo plano.
+
+port-bind = criar um vinculo de porta localmente com a do container.
+
+docker container run -d = Segundo plano, -p <porta local:porta do container> 8080:80 <nome da imagem>
+
+Remoção forçada para containers em execução = docker container rm -f <id do container>
+
+------------ Criando imagens de banco e colocando variaveis de ambientes ------
+
+docker container run -d -p 27107:27107 -e <varivavel de ambiente> = valor da variavel <nome da imagem que vai ser utilizada>
+
+------------ Comandos de troubleshooting ---------------
+Inspecionando um container = docker container inspect <id do container>
+docker container exec -it = Ira executar um comando no meu container IT = acesso ao terminal
+docker stop <id container> = Parando a execução de um container
+docker container start <id do container> = Iniciando um container 
+docker logs -n <numero de linhas> <id container> = verifica os logs do container
+docker logs -f <id do container> = verifica os logs do container contiuamente 
+docker logs -t <id do container> = verifica os logs do container com o tempo
+---------- Introdução a imagens docker ----------------
+Duas formas de criar uma imagem = Docker commit e docker file
+Docker commit = Cria a nossa imagem baseada em um container]]
+
+------------ Criando imagem com commit ------------
+docker commit <id do container> <nome da imagem>
+Listando imagens criadas = Docker image ls
+-------- Criando uma imagem com docker file-------
+docker imagem build -t <nome da imagem> . = o Ponto é todo o contexto da pasta
+docker image prune = remove as imagens que não tem mais referencia
+docker image inspect <id da imagem> = detalhes da imagem
+
+--- Opções de uso no docker file -------
+
+From = Inicializa o build de uma imagem a parti de uma imagem base.
+RUN = Executa um comando
+LABEL = Adiciona metadados a imagem
+CMD = Define o comando e/ou os parâmetro padrão
+EXPOSE = Define que o container precisa expor a porta em questão.
+ARG = Define um argumento pra ser usado no processo de contrução
+ENV = Define variaveis de ambiente
+ADD = Copia arquivos ou diretorios ou arquivos remotos e adiciona ao sistema de arquivo da imagem, arquivos aparti de uma url e etc
+COPY = Copia arquivos ou diretorios e adiciona ao sistema de arquivos de imagem, arquivos da maquina local.
+ENTRYPOINT = Ajuda você a configurar um container que pode ser executado como um executavel
+VOLUME = Define volumes que devem ser definidos
+WORKDIR = Define o seu diretório corrente
+
+----------- Boas praticas utilizando docker ------------------
+
+ ---------Nomeando sua imagem docker ---------------------
+    leandromello/api-conversao:v1
+     NameSpace = A quem perternce a imagem("LeandroMello")
+     Repositorio = Repositorio onde vai ficar a imagem("api-conversao")
+     Tag = Versão da imagem
+Sempre especificar a tag das imagens
+  exemplo = FROM node:14.17.5
+
+- Nunca utilize varios serviços em um unico container, o ideal é cada container conter um unico serviço, tendo a chance de obter escalabilidade
+- Sempre utilize o .dockerignore = Arquivo responsavel por ignora alguns tipos de arquivos, exemplo a pasta node_modules
+
+
+---------- COPY VS ADD -------------
+ADD = Copia arquivos externos ou de uma URL
+ Obs = Caso não precisar, sempre utilizar o COPY
+
+------------- ENTRYPOINT VS CMD ------------------
+ Ambos são utilizados para iniciar o container
+ Entrypoint = é imutavel, você não consegue sobrescrever
+ CMD = Conseguimos sobreescrever na execução do container exemplo executamos um arquivo hello world e podemos mudar na execução.
+ Podemos utlizar os dois juntas, passando parametros para o cmd para o entrypoint
+
+ ---------- Gerando uma imagem com parametros ("EXEMPLO TAG")
+ARG TAG=latest
+FROM ubuntu:$TAG
+$TAG = Parametro passado no docker build
+docker build -t leandromello/ubuntu-arg:v1 --build-arg TAG="18.0.4"
+
+  
