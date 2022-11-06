@@ -17,6 +17,8 @@ docker container run -d <imagem> = Executa um container em segundo plano.
 port-bind = criar um vinculo de porta localmente com a do container.
 
 docker container run -d = Segundo plano, -p <porta local:porta do container> 8080:80 <nome da imagem>
+ 
+ Criando um container no ubuntu = sudo docker container run -it -d -p 8080:8080 upload-file-api
 
 Remoção forçada para containers em execução = docker container rm -f <id do container>
 
